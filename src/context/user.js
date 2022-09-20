@@ -27,6 +27,31 @@ function AuthProvider({ children }) {
 
     }, [])
 
+    //user login 
+    async function signIn(email, password) {
+        setLoadingAuth(true);
+        await firebase.auth().signInWithEmailAndPassword(email, password).then(async (value) => {
+            let uid = value.user.uid;
+
+            const userProfile = await firebase.firestore().collection('users').doc(uid).get();
+
+            let data = {
+                uid: uid,
+                name: userProfile.data().name,
+                avatarUrl: userProfile.data().avatarUrl,
+                email: value.user.email
+            };
+            setUser(data);
+            storageUser(data);
+            setLoadingAuth(false);
+        })
+        .catch((error) => {
+            console.error(error);
+            setLoadingAuth(false);
+        })
+    }
+
+    //register new user
     async function signUp(name, email, password) {
         setLoadingAuth(true);
         await firebase.auth().createUserWithEmailAndPassword(email, password).then(async (value) => {
@@ -40,7 +65,7 @@ function AuthProvider({ children }) {
                 let data = {
                     uid: uid,
                     name: name,
-                    email: value.user.email, password,
+                    email: value.user.email,
                     avatarUrl: null
                 };
                 setUser(data);
@@ -49,7 +74,8 @@ function AuthProvider({ children }) {
             });
         })
         .catch((error) => {
-            console.log(error);setLoadingAuth(false);
+            console.log(error);
+            setLoadingAuth(false);
         })
     }
 
@@ -57,6 +83,7 @@ function AuthProvider({ children }) {
         localStorage.setItem('UserSystem', JSON.stringify(data));
     }
 
+    //logout
     async function signOut() {
         await firebase.auth().signOut();
         localStorage.removeItem('UserSystem');
@@ -64,13 +91,13 @@ function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ signed: !!user, user, loading, signUp, signOut }} >
+        <AuthContext.Provider value={{ 
+            signed: !!user, user, loading, signUp, signOut, signIn,loadingAuth
+            }} >
             {children}
         </AuthContext.Provider>
     )
 }
 
 export default AuthProvider; 
-
-
 

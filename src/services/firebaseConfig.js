@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import "firebase/firebase-auth"
+// import "firebase/firebase-auth.js";
 import 'firebase/firestore'
 
 
