@@ -26,7 +26,7 @@ export default function SignIn() {
             <button type="submit">Acessar</button>
           </form>
           
-          <Link to="/redirect">Criar conta</Link>
+          <Link to="/register">Criar conta</Link>
 
       </div>
     </div>
