@@ -1,4 +1,4 @@
-.sidebar {
+ .sidebar {
     margin: 0;
     padding: 0;
     width: 200px;
@@ -43,7 +43,7 @@
 }
 
 .sidebar a svg{
-    margin-left: .5em;
+    margin-right: .5em;
 }
 
 .sidebar a:hover{
@@ -51,7 +51,16 @@
     color: #fff;
 }
 
+
+.content{
+    margin-left: 200px;
+    padding: 1px 16px;
+}
+
 @media screen and (max-width: 700px) {
+    .content{
+        margin-left: 0;
+    }
     .sidebar{
         width: 100%;
         height: auto;
@@ -71,6 +80,8 @@
     }
 }
 
+
+
 @media screen and (max-width: 400px) {
     .sidebar a {
         text-align: center;
@@ -80,4 +91,4 @@
     .sidebar a svg{
         display: none
     }
-}
+} 

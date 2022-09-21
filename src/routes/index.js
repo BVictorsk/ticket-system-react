@@ -1,9 +1,9 @@
-import React from 'react'
 import { Switch } from 'react-router'
-import SignIn from '../pages/SignIn'
-import SignUp from '../pages/SignUp';
-import Dashboard from '../pages/dashboard'
+import SignIn from '../pages/SignIn/signIn'
+import SignUp from '../pages/SignUp/signUp';
+import Dashboard from '../pages/dashboard/dashboard'
 import Route from './Route'
+import Profile from '../pages/profile/profile';
 
 export default function index() {
   return (
@@ -11,6 +11,7 @@ export default function index() {
       <Route exact path="/" component={SignIn} />
       <Route exact path="/register" component={SignUp} />
       <Route exact path="/dashboard" component={Dashboard} isPrivate />
+      <Route exact path="/profile" component={Profile} isPrivate />
     </Switch>
   )
 }

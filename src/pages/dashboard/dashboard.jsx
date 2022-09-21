@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Header } from '../../components/header';
+import Header from '../../components/header/header';
 import { AuthContext } from '../../context/user'
 
 export default function Dashboard() {
