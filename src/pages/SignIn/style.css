@@ -3,11 +3,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #121212;
+    background-color: #495057;
 }
 
 .login{
-    background-color: #eaeaec;
+    background-color: #adb5bd;
     width: 600px;
     display: flex;
     align-items: center;
@@ -18,7 +18,7 @@
 .login-area{
     display: flex;
     justify-content: center;
-    background-color: #181c2e;
+    background-color: #212529;
     width: 100%;
 }
 
@@ -38,7 +38,7 @@ form{
 form h1{
     text-align: center;
     margin-bottom: .5em;
-    color: #181c2e;
+    color: #212529;
 }
 
 .login input{
@@ -48,22 +48,22 @@ form h1{
     border-radius: 7px;
     padding: 10px;
     font-size:  15px;
-    background-color: #fff;
+    background-color: #dee2e6;
+    color: #212529;
 }
 
 form button{
     height: 35px;
     border: 0;
     border-radius: 7px;
-    background-color: #181c2e;
-    color: #fff;
+    background-color: #212529;
+    color: #e9ecef;
 }
 
 .login a{
     margin: 1.5em 0;
-    color: #181c2e;
+    color: #212529;
     cursor: pointer; 
     font-size: 15px; 
     font-weight: bold;
-    text-decoration: underline;
 }

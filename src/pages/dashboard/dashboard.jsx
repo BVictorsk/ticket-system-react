@@ -8,7 +8,7 @@ export default function Dashboard() {
     <div>
       <Header />
       <div>Pagina Dashboard</div>
-      <button onClick={() => signOut()}>fazer logout</button>
+
     </div>
   )
 }
