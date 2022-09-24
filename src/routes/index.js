@@ -4,6 +4,7 @@ import SignUp from '../pages/SignUp/signUp';
 import Dashboard from '../pages/dashboard/dashboard'
 import Route from './Route'
 import Profile from '../pages/profile/profile';
+import Customers from '../pages/customers/Customers';
 
 export default function index() {
   return (
@@ -12,6 +13,7 @@ export default function index() {
       <Route exact path="/register" component={SignUp} />
       <Route exact path="/dashboard" component={Dashboard} isPrivate />
       <Route exact path="/profile" component={Profile} isPrivate />
+      <Route exact path="/customers" component={Customers} isPrivate />
     </Switch>
   )
 }
