@@ -37,3 +37,107 @@
     transform: scale(1.1);
     border-radius: 15px;
  }
+
+ table{
+    border: 1px solid #6c757d;
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+ }
+
+ table caption{
+    font-size: 1.5em;
+    margin: .5em 0 .7em;
+ }
+
+ table tr{
+    background-color: #adb5bd;
+    border: 1px solid #6c757d;
+    padding: .3em;
+    color: #212529;
+ }
+
+ table th, table td{
+    padding: .6em;
+    text-align: center;
+    color: #000509;
+
+ }
+
+ table th{
+    letter-spacing: .1em;
+    font-size: .85em;
+    text-transform: uppercase;
+ }
+
+ 
+ table td{
+    background-color: #ced4da;
+}
+
+ table td .action{
+    border: 0;
+    padding: 5px;
+    margin-right:  2px;
+    align-items: center;
+    display: inline-block;
+    border-radius: 5px;
+ }
+
+ table td .action svg{
+    vertical-align: middle;
+ }
+
+ table td .badge{
+    padding: 3px;
+    border-radius: 3px;
+    color: #f8f9fa;
+ }
+
+ @media screen and (max-width: 600px) {
+    table{
+        border: 0;
+    }
+
+    table caption{
+        font-size: 1.3em;
+    }
+
+    table thead{
+        border: none;
+        clip: rect( 0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    table tr{
+        border-bottom: 3px solid #dee2e6;
+        display: block;
+        margin-bottom: .6em;
+    }
+
+    table td{
+        border-top: 1px solid #dee2e6;
+        display: block;
+        font-size: .8em;
+        text-align: right;
+    }
+
+    table td::before{
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    table tr:last-child{
+        border-bottom: 0;
+    }
+
+ }
