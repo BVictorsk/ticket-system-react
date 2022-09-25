@@ -1,0 +1,39 @@
+ .dashboard{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+ }
+
+ .dashboard span{
+    margin: 2em 0;
+    font-weight: 600;
+    font-size: 1.2em;
+ }
+
+ .new{
+    float: right;
+    margin-bottom: 1.5em;
+    background-color: #1a936f;
+    color: #e9ecef;
+    border: 0;
+    padding: .5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 1.2em;
+    border-radius: 7px;
+    transition: ease-in 0.01s;
+ }
+
+ .new svg{
+    margin-right: 5px;
+ }
+
+ .new:hover{
+    background-color: #00a896;
+    color: #dee2e6;
+    transform: scale(1.1);
+    border-radius: 15px;
+ }
