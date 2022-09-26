@@ -4,6 +4,7 @@ import firebase from '../../services/firebaseConfig';
 import Title from '../../components/title/title';
 import Header from '../../components/header/header';
 import { FiPlus } from 'react-icons/fi'
+import { toast } from 'react-toastify';
 import './new.style.css'
 
 export default function New() {
@@ -51,10 +52,27 @@ export default function New() {
 
     }, [])
 
-    function handleRegister(e) {
+    //registrar novo chamado
+    async function handleRegister(e) {
         e.preventDefault();
 
-        alert('teste')
+        await firebase.firestore().collection('Chamados').add({
+            created: new Date(),
+            client: customers[customerSelected].fantasyName,
+            clientId: customers[customerSelected].id,
+            subject: subject,
+            status: status,
+            description: description,
+            userId: user.uid
+        }).then(() => {
+            toast.success("Chamado registrado com sucesso")
+            setDescription('');
+            setCustomerSelected(0)
+        })
+        .catch((error) => {
+            toast.error("Erro ao registrar, tente novamente mais tarde")
+            console.error(error)
+        })
     }
 
     //troca de assunto
