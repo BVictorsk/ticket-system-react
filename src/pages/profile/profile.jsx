@@ -1,137 +1,152 @@
-import { useContext, useState } from "react"
-import { AuthContext } from "../../context/user"
-import Header from "../../components/header/header"
-import Title from "../../components/title/title"
-import { FiSettings, FiUpload } from 'react-icons/fi'
-import firebase from "../../services/firebaseConfig"
-import "./profile.style.css"
-import avatar from "../../assets/avatar.png"
 
-export default function Profile() {
+import { useState, useContext } from 'react';
+import './profile.style.css';
+import Header from '../../components/header/header';
+import Title from '../../components/title/title';
+import avatar from '../../assets/avatar.png';
+
+import firebase from '../../services/firebaseConfig';
+import { AuthContext } from '../../context/user';
+
+import { FiSettings, FiUpload } from 'react-icons/fi';
+
+export default function Profile(){
   const { user, signOut, setUser, storageUser } = useContext(AuthContext);
 
   const [name, setName] = useState(user && user.name);
   const [email, setEmail] = useState(user && user.email);
+
   const [avatarUrl, setAvatarUrl] = useState(user && user.avatarUrl);
   const [imageAvatar, setImageAvatar] = useState(null);
 
 
-  //preview da imagem
-  function handleFile(e) {
+  function handleFile(e){
 
-    if(e.target.files[0]) {
+    if(e.target.files[0]){
       const image = e.target.files[0];
+      
+      if(image.type === 'image/jpeg' || image.type === 'image/png'){
 
-      if( image.type === "image/jpeg" || image.type === 'image/png'  ) {
         setImageAvatar(image);
         setAvatarUrl(URL.createObjectURL(e.target.files[0]))
-      } else {
-        alert('Envie uma imagem do tipo PNG ou JPG');
+
+      }else{
+        alert('Envie uma imagem do tipo PNG ou JPEG');
         setImageAvatar(null);
         return null;
       }
 
     }
-    
+
   }
 
+  async function handleUpload(){
+    const currentUid = user.uid;
 
-  async function handleUpload() {
-    const  currentUid = user.uid;
+    const uploadTask = await firebase.storage()
+    .ref(`images/${currentUid}/${imageAvatar.name}`)
+    .put(imageAvatar)
+    .then( async () => {
+      console.log('FOTO ENVIADA COM SUCESSO!');
 
-    const uploadTask = await firebase.storage().ref(`images/${currentUid}/${imageAvatar.name}`)
-    .put(imageAvatar).then(async () => {
-      console.log('foto enviada com sucesso');
-
-      await firebase.storage().ref(`images/${currentUid}`).child(imageAvatar.name).
-      getDownloadURL().then( async (url) => {
-        let urlPicture = url;
-
-        await firebase.firestore().collection('users').doc(user.uid).update({
-          avatar: urlPicture,
+      await firebase.storage().ref(`images/${currentUid}`)
+      .child(imageAvatar.name).getDownloadURL()
+      .then( async (url)=>{
+        let urlFoto = url;
+        
+        await firebase.firestore().collection('users')
+        .doc(user.uid)
+        .update({
+          avatarUrl: urlFoto,
           name: name
         })
-        .then(() => {
-          let data  ={
+        .then(()=>{
+          let data = {
             ...user,
-            avatarUrl: urlPicture,
+            avatarUrl: urlFoto,
             name: name
-          };
+          }; 
           setUser(data);
           storageUser(data);
+
         })
+
       })
-      
+
     })
 
   }
 
-  //salvar alteração
-   async function handleSave(e) {
+
+  async function handleSave(e){
     e.preventDefault();
 
-    if(imageAvatar === null & name !== '') {
-
-      await firebase.firestore().collection('users').doc(user.uid).update({
+    if(imageAvatar === null && name !== ''){
+      await firebase.firestore().collection('users')
+      .doc(user.uid)
+      .update({
         name: name
-      }).then( () => {
+      })
+      .then(()=>{
         let data = {
           ...user,
           name: name
         };
-
         setUser(data);
         storageUser(data);
 
-      }) 
+      })
 
     }
-
-    else if(name !== '' && imageAvatar !== null) {
+    else if(name !== '' && imageAvatar !== null){
       handleUpload();
     }
 
-   }
+  }
 
-  return (
+  return(
     <div>
-        <Header />
+      <Header/>
 
-        <div className="content">
-          <Title name="Meu perfil" color="212529">
-            <FiSettings size={25} color="212529" />
-          </Title>
+      <div className="content">
+        <Title name="Meu perfil">
+          <FiSettings size={25} />
+        </Title>
 
-          <div className="container">
-            <form className="form-profile" onSubmit={handleSave} >
-              <label className="label-avatar">
-                <span>
-                  <FiUpload color="#adb5bd" size={25} />
-                </span>
-                <input type="file" accept="image/*" onChange={handleFile } /><br />
-                { avatarUrl === null ? 
-                <img src={avatar} width="250" height="250" alt="foto de perfil do usuário"/>
+
+        <div className="container">
+          <form className="form-profile" onSubmit={handleSave}>
+            <label className="label-avatar">
+              <span>
+                <FiUpload color="#FFF" size={25} />
+              </span>
+
+              <input type="file" accept="image/*" onChange={handleFile}  /><br/>
+              { avatarUrl === null ? 
+                <img src={avatar} width="250" height="250" alt="Foto de perfil do usuario" />
                 :
-                <img src={avatarUrl} width="250" height="250" alt="foto de perfil do usuário"/>
-                 }
-              </label>
+                <img src={avatarUrl} width="250" height="250" alt="Foto de perfil do usuario" />
+              }
+            </label>
 
-              <label>Nome</label>
-              <input type="text" value={name} onChange={ e => setName(e.target.value) } />
+            <label>Nome</label>
+            <input type="text" value={name} onChange={ (e) => setName(e.target.value) } />
 
-              <label>E-mail</label>
-              <input type="text" value={email} disabled />
+            <label>Email</label>
+            <input type="text" value={email} disabled={true} />     
 
-              <button Type="submit">Salvar</button>
+            <button type="submit">Salvar</button>       
 
-            </form>
-          </div>
-
-          <div className="container">
-            <button className="logout-button" onClick={() => signOut()}>Sair</button>
-          </div>
-
+          </form>
         </div>
+
+        <div className="container">
+            <button className="logout-button" onClick={ () => signOut() } >
+               Sair
+            </button>
+        </div>
+
+      </div>
     </div>
   )
 }

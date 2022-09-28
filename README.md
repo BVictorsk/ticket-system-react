@@ -7,3 +7,5 @@ npm install firebase
 npm install react-toastify => para os alertas
 
 npm install react-icons
+
+npm i date-fns
