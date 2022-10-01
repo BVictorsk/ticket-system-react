@@ -56,7 +56,7 @@ export default function New() {
     async function handleRegister(e) {
         e.preventDefault();
 
-        await firebase.firestore().collection('chamados').add({
+        await firebase.firestore().collection('tickets').add({
             created: new Date(),
             client: customers[customerSelected].fantasyName,
             clientId: customers[customerSelected].id,

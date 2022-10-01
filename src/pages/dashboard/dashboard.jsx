@@ -10,7 +10,7 @@ import { format } from 'date-fns'
 
 const listRef = firebase.firestore().collection('tickets').orderBy('created', 'desc');
 
-export default function Dashboard() {
+export default function Dashboard(){
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -20,7 +20,7 @@ export default function Dashboard() {
 
   useEffect(()=> {
 
-    loadChamados();
+    loadTickets();
 
     return () => {
 
@@ -28,8 +28,8 @@ export default function Dashboard() {
   }, []);
 
   
-  async function loadChamados(){
-    await listRef.limit(5)
+  async function loadTickets(){
+    await listRef.limit(1)
     .get()
     .then((snapshot) => {
       updateState(snapshot)
@@ -59,12 +59,11 @@ export default function Dashboard() {
           created: doc.data().created,
           createdFormated: format(doc.data().created.toDate(), 'dd/MM/yyyy'),
           status: doc.data().status,
-          description: doc.data().description
         })
       })
 
       const lastDoc = snapshot.docs[snapshot.docs.length -1]; //Pegando o ultimo documento buscado
-
+      
       setTickets(tickets => [...tickets, ...list]);
       setLastDocs(lastDoc);
 
@@ -75,64 +74,99 @@ export default function Dashboard() {
     setLoadingMore(false);
 
   }
+
+
+  async function handleMore(){
+    setLoadingMore(true);
+    await listRef.startAfter(lastDocs).limit(5)
+    .get()
+    .then((snapshot)=>{
+      updateState(snapshot)
+    })
+  }
  
-  return (
+
+  if(loading){
+    return(
+      <div>
+        <Header/>
+
+        <div className="content">
+          <Title name="Atendimentos">
+            <FiMessageSquare size={25} />
+          </Title>  
+
+          <div className="container dashboard">
+            <span>Buscando chamados...</span>
+          </div>
+
+        </div>      
+      </div>
+    )
+  }
+
+  return(
     <div>
-      <Header />
+      <Header/>
 
       <div className="content">
-        <Title name="Atendimentos" >
-        <FiMessageSquare size={25} />
+        <Title name="Atendimentos">
+          <FiMessageSquare size={25} />
         </Title>
 
         {tickets.length === 0 ? (
           <div className="container dashboard">
-            <span>Nenhum chamado registrado</span>
-        
+            <span>Nenhum chamado registrado...</span>
+
             <Link to="/new" className="new">
-              <FiPlus size={25} color="fff" />
+              <FiPlus size={25} color="#FFF" />
               Novo chamado
-             </Link>
+            </Link>
           </div>
-        ) : (
+        )  : (
           <>
             <Link to="/new" className="new">
-              <FiPlus size={25} color="fff" />
+              <FiPlus size={25} color="#FFF" />
               Novo chamado
             </Link>
 
             <table>
-
               <thead>
                 <tr>
                   <th scope="col">Cliente</th>
                   <th scope="col">Assunto</th>
                   <th scope="col">Status</th>
-                  <th scope="col">Criado em</th>
+                  <th scope="col">Cadastrado em</th>
                   <th scope="col">#</th>
                 </tr>
               </thead>
-
               <tbody>
-                <tr>
-                  <td data-label="Cliente">Cliente teste</td>
-                  <td data-label="Assunto">Suporte</td>
-                  <td data-label="Status">
-                    <span className="badge" style={{backgroundColor: "#52b69a"}}>Em aberto</span>
-                  </td>
-                  <td data-label="Criado">24/09/2022</td>
-                  <td data-label="#">
-                    <button className="action" style={{backgroundColor: '#00a896'}}>
-                      <FiSearch color="#f8f9fa" size={17} />
-                    </button>
-                    <button className="action" style={{backgroundColor: '#f3722c'}}>
-                      <FiEdit2 color="#f8f9fa" size={17} />
-                    </button>
-                  </td>
-                </tr>
+                {tickets.map((item, index)=>{
+                  return(
+                    <tr key={index}>
+                      <td data-label="Cliente">{item.client}</td>
+                      <td data-label="Assunto">{item.subject}</td>
+                      <td data-label="Status">
+                        <span className="badge" style={{ backgroundColor: item.status === 'Aberto' ? '#5cb85c' : '#999' }}>{item.status}</span>
+                      </td>
+                      <td data-label="Cadastrado">{item.createdFormated}</td>
+                      <td data-label="#">
+                        <button className="action" style={{backgroundColor: '#3583f6' }}>
+                          <FiSearch color="#FFF" size={17} />
+                        </button>
+                        <button className="action" style={{backgroundColor: '#F6a935' }}>
+                          <FiEdit2 color="#FFF" size={17} />
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
-
             </table>
+            
+            {loadingMore && <h3 style={{textAlign: 'center', marginTop: 15 }}>Buscando dados...</h3>}
+            { !loadingMore && !isEmpty && <button className="button-more" onClick={handleMore}>Buscar mais</button> }
+
           </>
         )}
 
