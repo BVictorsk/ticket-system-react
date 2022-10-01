@@ -7,6 +7,7 @@ import { FiMessageSquare, FiPlus, FiSearch, FiEdit2 } from 'react-icons/fi'
 import { Link } from 'react-router-dom';
 import firebase from '../../services/firebaseConfig'
 import { format } from 'date-fns'
+import Modal from '../../components/modal/modal';
 
 const listRef = firebase.firestore().collection('tickets').orderBy('created', 'desc');
 
@@ -17,8 +18,24 @@ export default function Dashboard(){
   const [isEmpty, setIsEmpty] = useState(false);
   const [lastDocs, setLastDocs] = useState();
 
+  const [showPostModal, setShowPostModal] = useState(false);
+  const [detail, setDetail] = useState();
 
   useEffect(()=> {
+    async function loadTickets(){
+      await listRef.limit(5)
+      .get()
+      .then((snapshot) => {
+        updateState(snapshot)
+      })
+      .catch((err)=>{
+        console.log('Deu algum erro: ', err);
+        setLoadingMore(false);
+      })
+  
+      setLoading(false);
+  
+    }
 
     loadTickets();
 
@@ -26,22 +43,6 @@ export default function Dashboard(){
 
     }
   }, []);
-
-  
-  async function loadTickets(){
-    await listRef.limit(1)
-    .get()
-    .then((snapshot) => {
-      updateState(snapshot)
-    })
-    .catch((err)=>{
-      console.log('Deu algum erro: ', err);
-      setLoadingMore(false);
-    })
-
-    setLoading(false);
-
-  }
 
 
   async function updateState(snapshot){
@@ -83,6 +84,11 @@ export default function Dashboard(){
     .then((snapshot)=>{
       updateState(snapshot)
     })
+  }
+
+  function togglePostModal(item) {
+    setShowPostModal(!showPostModal)
+    setDetail(item)
   }
  
 
@@ -151,7 +157,7 @@ export default function Dashboard(){
                       </td>
                       <td data-label="Cadastrado">{item.createdFormated}</td>
                       <td data-label="#">
-                        <button className="action" style={{backgroundColor: '#3583f6' }}>
+                        <button className="action" style={{backgroundColor: '#3583f6' }} onClick={() => togglePostModal(item)}>
                           <FiSearch color="#FFF" size={17} />
                         </button>
                         <button className="action" style={{backgroundColor: '#F6a935' }}>
@@ -171,6 +177,13 @@ export default function Dashboard(){
         )}
 
       </div>
+
+      {showPostModal && (
+        <Modal 
+          content={detail}
+          close={togglePostModal}
+        />
+      )}
 
     </div>
   )
