@@ -60,6 +60,7 @@ export default function Dashboard(){
           created: doc.data().created,
           createdFormated: format(doc.data().created.toDate(), 'dd/MM/yyyy'),
           status: doc.data().status,
+          description: doc.data().description
         })
       })
 
@@ -160,9 +161,9 @@ export default function Dashboard(){
                         <button className="action" style={{backgroundColor: '#3583f6' }} onClick={() => togglePostModal(item)}>
                           <FiSearch color="#FFF" size={17} />
                         </button>
-                        <button className="action" style={{backgroundColor: '#F6a935' }}>
+                        <Link className="action" style={{backgroundColor: '#F6a935' }} to={`/new/${item.id}`} >
                           <FiEdit2 color="#FFF" size={17} />
-                        </button>
+                        </Link>
                       </td>
                     </tr>
                   )

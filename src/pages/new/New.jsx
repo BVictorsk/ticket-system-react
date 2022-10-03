@@ -1,10 +1,11 @@
 import { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '../../context/user';
+import { FiPlus } from 'react-icons/fi'
+import { toast } from 'react-toastify';
+import { useHistory, useParams } from 'react-router';
 import firebase from '../../services/firebaseConfig';
 import Title from '../../components/title/title';
 import Header from '../../components/header/header';
-import { FiPlus } from 'react-icons/fi'
-import { toast } from 'react-toastify';
 import './new.style.css'
 
 export default function New() {
@@ -14,8 +15,12 @@ export default function New() {
     const [subject, setSubject] = useState('Suporte')
     const [status, setStatus] = useState('Aberto')
     const [description, setDescription] = useState('');
+    const [ idCustomer, setIdCustomer ] = useState(false);
 
     const { user } = useContext(AuthContext);
+    const { id } = useParams();
+
+    const history = useHistory()
 
     useEffect(() => {
         async function loadCustomers() {
@@ -40,6 +45,10 @@ export default function New() {
                 setCustomers(list);
                 setLoadCustomers(false);
 
+                if(id) {
+                    loadId(list);
+                }
+
             })
             .catch((err) => {
                 console.error("deu algum erro", err)
@@ -52,9 +61,50 @@ export default function New() {
 
     }, [])
 
+    async function loadId(list) {
+        await firebase.firestore().collection('tickets').doc(id).get()
+        .then((snapshot) => {
+            setSubject(snapshot.data().subject);
+            setStatus(snapshot.data().status);
+            setDescription(snapshot.data().description);
+
+            let index = list.findIndex(item => item.id === snapshot.data().clientId);
+            setCustomerSelected(index);
+            setIdCustomer(true)
+        })
+        .catch(err => {
+            console.error('Erro no id passado',err);
+            setIdCustomer(false)
+        })
+    }
+
     //registrar novo chamado
     async function handleRegister(e) {
         e.preventDefault();
+
+        if(idCustomer) {
+            await firebase.firestore().collection('tickets').doc(id)
+            .update({
+                client: customers[customerSelected].fantasyName,
+                clientId: customers[customerSelected].id,
+                subject: subject,
+                status: status,
+                description: description,
+                userId: user.uid
+            })
+            .then(() => {
+                toast.success("Chamado editado com sucesso");
+                setCustomerSelected(0);
+                setDescription('');
+                history.push('/dashboard');
+            })
+            .catch((err) => {
+                toast.error('Ops erro ao registrar')
+                console.log(err)
+            })
+
+            return ;
+        }
 
         await firebase.firestore().collection('tickets').add({
             created: new Date(),
