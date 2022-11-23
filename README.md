@@ -5,7 +5,7 @@ The intention of this project was to practice React.js concepts and my skills wi
 |   Section  | Description |
 |   --------- | ------
 |   [Documentation 📚](./Documentation.md) | Know dependencies of the project |
-|   [Updates 🏁](./Updates.md) | Future project updates |
+|   [Updates 🆕](./Updates.md) | Future project updates |
 
 ## Core Technologies
 <div style="display: inline_block">
